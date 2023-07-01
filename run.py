@@ -1,5 +1,8 @@
 import requests
 import time
+import os
+
+from loguru import logger
 from playsound import playsound
 from collections import Counter
 
@@ -7,7 +10,7 @@ QUESTIONS = [
     "Can you see the baby's nose?",
     "Can you see the baby's mouth?"
 ]
-ENDPOINT = 'https://wk5xd4yoj9axcu06.eu-west-1.aws.endpoints.huggingface.cloud'
+ENDPOINT = os.getenv('ENDPOINT')
 
 def main():
     # prepare image + question
@@ -24,7 +27,7 @@ def _check_images(image):
                 'image':image
                 }
         }
-        response = requests.post(ENDPOINT, json = payload, headers={'Authorization': 'Bearer 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'})
+        response = requests.post(ENDPOINT, json = payload, headers={'Authorization': f'Bearer {os.getenv("TOKEN")}'})
         result = response.json()[0]['answer']
         answer_count = Counter(result)
         if answer_count["yes"] != len(QUESTIONS):
